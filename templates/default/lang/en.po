@@ -1,87 +1,100 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
-"Language-Team: \n"
+"Project-Id-Version: ProjectSend theme: Default\n"
+"POT-Creation-Date: 2018-06-04 03:30-0300\n"
+"PO-Revision-Date: 2018-06-04 03:31-0300\n"
+"Last-Translator: \n"
+"Language-Team: ProjectSend <contact@projectsend.org>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
-"X-Generator: Poedit 1.5.7\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.7\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPath-0: .\n"
 
-#. Text in echo
-#: psend/templates/default/template.php:89
-msgid "Date"
-msgstr ""
-
-#. Text in echo
-#: psend/templates/default/template.php:87
-msgid "Description"
-msgstr ""
-
-#. Text in echo
-#: psend/templates/default/template.php:91
-#: psend/templates/default/template.php:172
-msgid "Download"
-msgstr ""
-
-#. Text in function
-#: psend/templates/default/template.php:1
+#: template.php:21
 msgid "File downloads"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:148
-msgid "File expired"
+#: template.php:51
+msgid "All categories"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:190
-msgid "First"
+#: template.php:58
+msgid "Filter"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:90
-msgid "Image preview"
+#: template.php:72
+msgid "Selected files actions"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:195
-msgid "Last"
+#: template.php:76
+msgid "Select action"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:194
-msgid "Next"
+#: template.php:77
+msgid "Download zipped"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:192
-msgid "Page"
+#: template.php:87
+msgid "Proceed"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:191
-msgid "Prev."
+#: template.php:95
+msgid "Found"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:196
-msgid "Show"
+#: template.php:95
+msgid "files"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:88
-msgid "Size"
+#: template.php:105
+msgid "Your search keywords returned no results."
 msgstr ""
 
-#. Text in function
-#: psend/templates/default/template.php:63
+#: template.php:110
 msgid "There are no files available."
 msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:85
+#: template.php:134
+msgid "Thumbnail"
+msgstr ""
+
+#: template.php:140
 msgid "Title"
+msgstr ""
+
+#: template.php:143
+msgid "Type"
+msgstr ""
+
+#: template.php:149
+msgid "Description"
+msgstr ""
+
+#: template.php:156
+msgid "Size"
+msgstr ""
+
+#: template.php:163
+msgid "Date"
+msgstr ""
+
+#: template.php:166
+msgid "Expiration date"
+msgstr ""
+
+#: template.php:170 template.php:250
+msgid "Download"
+msgstr ""
+
+#: template.php:226
+msgid "Never"
+msgstr ""
+
+#: template.php:246
+msgid "File expired"
 msgstr ""

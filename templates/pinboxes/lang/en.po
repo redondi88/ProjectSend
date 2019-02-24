@@ -1,61 +1,66 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
-"Language-Team: \n"
+"Project-Id-Version: Projectsend theme: PinBoxes\n"
+"POT-Creation-Date: 2018-02-26 02:22-0300\n"
+"PO-Revision-Date: 2018-02-26 02:23-0300\n"
+"Last-Translator: \n"
+"Language-Team: ProjectSend <contact@projectsend.org>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
-"X-Generator: Poedit 1.5.7\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: font-awesome-4.6.3\n"
+"X-Poedit-SearchPathExcluded-1: js\n"
 
-#. Text in function
-#: psend/templates/pinboxes/template.php:1
+#: template.php:20
 msgid "Available files"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:159
-msgid "Download"
+#: template.php:93
+msgid "Welcome"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:165
-msgid "File expired"
-msgstr ""
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:151
-msgid "File size:"
-msgstr ""
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:66
-msgid "Logout"
-msgstr ""
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:62
-msgid "Search"
-msgstr ""
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:61
+#: template.php:98
 msgid "Search..."
 msgstr ""
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:78
-msgid "There are no files."
+#: template.php:108
+msgid "Categories"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:65
+#: template.php:110
+msgid "All files"
+msgstr ""
+
+#: template.php:129
 msgid "Upload files"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:56
-msgid "Welcome"
+#: template.php:132
+msgid "Logout"
+msgstr ""
+
+#: template.php:146
+msgid "There are no files."
+msgstr ""
+
+#: template.php:210
+msgid "File size:"
+msgstr ""
+
+#: template.php:220
+msgid "Expiration date:"
+msgstr ""
+
+#: template.php:231
+msgid "Download"
+msgstr ""
+
+#: template.php:237
+msgid "File expired"
 msgstr ""

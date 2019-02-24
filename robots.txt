@@ -1,9 +1,0 @@
-User-agent: *
-Disallow: /css/
-Disallow: /emails/
-Disallow: /img/
-Disallow: /includes/
-Disallow: /install/
-Disallow: /lang/
-Disallow: /templates/
-Disallow: /upload/
