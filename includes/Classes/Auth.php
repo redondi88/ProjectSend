@@ -96,6 +96,7 @@ class Auth
         ]);
     }
 
+    public function authenticate($username, $password, $ldap = false)
     {
         if ( !$username || !$password )
             return false;
@@ -114,6 +115,7 @@ class Auth
                 $this->user = $user;
             }
 
+			if (password_verify($password, $user->getRawPassword()) || $ldap) {
 				if ($user->isActive()) {
                     $new2fa = new \ProjectSend\Classes\AuthenticationCode();
                     if ($new2fa->requires2fa()) {
@@ -157,6 +159,11 @@ class Auth
 		}
 		else {
             $this->bfchecker->addFailedLoginAttempt($username, get_client_ip());
+            if($ldap){
+              $this->setError($this->error_strings['ldap_no_user']);
+            } else {
+              $this->setError($this->error_strings['invalid_credentials']);
+            }
 
         }
 
@@ -312,6 +319,60 @@ class Auth
         }
     }
 
+    public function testLdap()
+    {
+        global $logger;
+
+
+		    $selected_form_lang = (!empty( $language ) ) ? $language : SITE_LANG;
+
+        // Bind to server
+        $ldap_server = get_option('ldap_server');
+        $ldap_bind_dn = get_option('ldap_bind_dn');
+        $ldap_admin_password = get_option('ldap_admin_password');
+        try {
+
+            $ldap = ldap_connect($ldap_server);
+
+
+        } catch (\Exception $e) {
+
+            $return = [
+                'status' => 'error',
+                'message' => sprintf(__("LDAP connection error: %s", 'cftp_admin'), $e->getMessage())
+            ];
+
+            return json_encode($return);
+        }
+
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, get_option('ldap_protocol_version'));
+        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+
+
+        try {
+            $bind = @ldap_bind($ldap, $ldap_bind_dn, $ldap_admin_password);
+            if ($bind) {
+                $return = [
+                   'status' => 'success',
+                   'message' => 'LDAP bind succesful'
+                 ];
+            } else {
+              $return = [
+                 'status' => 'error',
+                 'message' => ldap_error($ldap)
+               ];
+            }
+            return json_encode($return);
+          } catch (\Exception $e) {
+                $return = [
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ];
+              return json_encode($return);
+          }
+      }
+
+    public function loginLdap($email, $password, $language = SITE_LANG)
     {
         global $logger;
         //echo "LOGIIIN";die();
@@ -347,30 +408,93 @@ class Auth
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
         try {
+            $bind = ldap_bind($ldap, $ldap_bind_dn, $ldap_admin_password);
             if ($bind) {
                 $ldap_search_base = get_option('ldap_search_base');
-                
-                $arr = array('dn', 1);
-                $result = ldap_search($ldap, $ldap_bind_dn, "(mail=$email)", $arr);
-                $entries = ldap_get_entries($ldap, $result);
 
+                $arr = array('dn', 'givenname', 'sn');
+                $result = ldap_search($ldap, $ldap_search_base, "(mail=$email)", $arr);
+                $entries = ldap_get_entries($ldap, $result);
                 //echo "CREATE USER1";die();
                 //print_r($entries);
                 //echo $email;
                 if ($entries['count'] > 0) {
                     // Bind with user
+                    if ($ldap_user = @ldap_bind($ldap, $entries[0]['dn'], $password)) {
+
+                        $login = json_decode($this->authenticate($email, 'fake_pass', TRUE));
+
+                        //if the user does not exist on the DB, create it
+                        if($login->status == "error" && $login->message == "ldap_no_user"){
+
+
+                          /* block LDAP to self registration requests
+                          if (get_option('clients_can_register') == '0') {
+                              $this->setError($this->error_strings['no_self_registration']);
+
+                              ps_redirect(BASE_URI);
+                          }
+                          */
+                          //only create users that belong in the right OUs
+                          if (strpos($entries[0]['dn'], get_option('ldap_client_base')) !== false) {
+                              $user_type = 'new_client';
+                              $user_role = 0;
+                          } else if (strpos($entries[0]['dn'], get_option('ldap_user_base')) !== false) {
+                              $user_type = 'new_user';
+                              $user_role = 7;
+                          } else { //reject creation of users outside of the valid OUs
+                            //return error
+                          }
+
+                          //echo "CREATE USER";die();
+                          $email_parts = explode('@', $email);
+                          $username = generate_username($email_parts[0]);
+                          $password = generate_random_password();
+                          /** Validate the information from the posted form. */
+                          /** Create the user if validation is correct. */
+                          $new_client = new \ProjectSend\Classes\Users();
+                          $new_client->setType($user_type);
+                          $new_client->set([
+                              'username' => $username,
+                              'password' => $password,
+                              'name' => $entries[0]['givenname'][0] . ' ' . $entries[0]['sn'][0],
+                              'email' => $email,
+                              'address' => null,
+                              'phone' => null,
+                              'contact' => null,
+                              'max_file_size' => 0,
+                              'notify_upload' => 1,
+                              'notify_account' => 0,
+                              'active' =>  1,
+                              'account_requested'	=>  0,
+                              'type' => $user_type,
+                              'recaptcha' => null,
+                              'role' => $user_role,
+                          ]);
+                          //print_r($new_client);
+                          $new_client->create();
+                          echo "user created";
+                        }
+
+                        return json_encode($login);
                     }
                     else {
                         $return = [
                             'status' => 'error',
+                            'message' => __("The supplied email or password does not match an existing record1.", 'cftp_admin')
                         ];
+
+                        return json_encode($return);
                     }
                 }
                 else {
                     // Email not found
                     $return = [
                         'status' => 'error',
+                        'message' => __("The supplied email or password does not match an existing record2.", 'cftp_admin')
                     ];
+
+                    return json_encode($return);
                 }
             }
             else {
@@ -378,6 +502,8 @@ class Auth
                     'status' => 'error',
                     'message' => __("Error binding to LDAP server.",'cftp_admin')
                 ];
+
+                return json_encode($return);
             }
         } catch (\Exception $e) {
             $return = [

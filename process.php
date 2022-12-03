@@ -26,10 +26,33 @@ switch ($_GET['do']) {
         $login = $auth->socialLogin($_GET['provider']);
         break;
     case 'login_ldap':
-        /*
-        $login = $auth->loginLdap($_POST['ldap_email'], $_POST['ldap_password']);
+
+        $login = json_decode($auth->loginLdap($_POST['ldap_email'], $_POST['ldap_password']));
+
         $auth->setLanguage($_POST['language']);
-        echo $login;
+        if ($login->status == 'success') {
+            $user = new \ProjectSend\Classes\Users($login->user_id);
+
+            echo json_encode($login);
+
+        } else {
+
+            $flash->error($auth->getError());
+            $bfstatus = $bfchecker->getLoginStatus(get_client_ip());
+            switch ($bfstatus['status']) {
+                case 'delay':
+                    if (is_numeric($bfstatus['message'])) {
+                        $flash->error('<div id="message_countdown">' . sprintf(__('Please wait %s seconds before attempting to log in again.', 'cftp_admin'), '<span class="seconds_countdown">' . $bfstatus['message'] . '</span>') . '</div>');
+                        if ($bfstatus['message'] > 150) {
+                            $flash->error(sprintf(__('Warning: You are about to reach the failed attempts limit, which will completely block your access for a few minutes.', 'cftp_admin'), $bfstatus['message']));
+                        }
+                    }
+                    break;
+            }
+
+            //ps_redirect(BASE_URI);
+            echo json_encode($login);
+        }
         break;
 
         exit;

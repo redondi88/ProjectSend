@@ -25,6 +25,7 @@ $json_strings = [
         'logging_in' => __('Logging in','cftp_admin'),
         'redirecting' => __('Redirecting','cftp_admin'),
         'errors' => [
+            'ldap_no_user' => __("ldap_no_user",'cftp_admin'),
             'invalid_credentials' => __("The supplied credentials are not valid.",'cftp_admin'),
             'wrong_username' => __("The supplied username doesn't exist.",'cftp_admin'),
             'wrong_password' => __("The supplied password is incorrect.",'cftp_admin'),

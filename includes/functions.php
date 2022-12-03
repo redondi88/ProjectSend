@@ -452,6 +452,7 @@ function generate_random_password()
 function generate_username($from)
 {
     $cut = substr($from, 0, MAX_USER_CHARS);
+    if (!username_exists($cut) && strlen($from) > MIN_USER_CHARS) {
         return $cut;
     }
 

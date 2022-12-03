@@ -169,6 +169,8 @@
             </select>
         </div>
     </div>
+    <button type="button" class="btn btn-secondary" id="test-ldap">Test Settings</button>
+    <div id="ajax_response"></div>
     <?php
         $ldap_fields = array(
             'server' => array(
@@ -197,6 +199,18 @@
                 'name' => 'ldap_search_base',
                 'type' => 'text',
                 'note' => sprintf(__('The tree where to search users on. Eg: %s', 'cftp_admin'), 'cn=Users,dc=domain,dc=com'),
+            ),
+            'client_base' => array(
+                'label' => __('Client base DN','cftp_admin'),
+                'name' => 'ldap_client_base',
+                'type' => 'text',
+                'note' => sprintf(__('The OU for clients to be alloed from. Eg: %s', 'cftp_admin'), 'ou=Users,dc=domain,dc=com'),
+            ),
+            'user_base' => array(
+                'label' => __('User base DN','cftp_admin'),
+                'name' => 'ldap_user_base',
+                'type' => 'text',
+                'note' => sprintf(__('The OU for users(Uploader) to be alloed from. Eg: %s', 'cftp_admin'), 'ou=Users,dc=domain,dc=com'),
             ),
         );
         foreach ($ldap_fields as $field => $field_data) {

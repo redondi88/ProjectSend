@@ -123,6 +123,8 @@ switch ($_GET['do']) {
         exit;
     break;
 
+    case 'ldap_test':
+        echo $auth->testLdap();
     break;
     default:
         die_with_error_code(500);

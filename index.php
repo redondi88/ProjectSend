@@ -131,25 +131,26 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 <div class="ajax_response">
                 </div>
 
-                <?php /*
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#local" aria-controls="local" role="tab" data-toggle="tab">Local account</a></li>
-                    <?php if ($login_types['ldap'] == 'true') { ?>
-                        <li role="presentation"><a href="#ldap" aria-controls="ldap" role="tab" data-toggle="tab">LDAP</a></li>
-                    <?php } ?>
-                </ul> */ ?>
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade in active show" id="local">
+                <nav>
+                  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <button class="nav-link active" id="local-tab" data-bs-toggle="tab" data-bs-target="#nav-local" type="button" role="tab" aria-controls="nav-local" aria-selected="true">Local account</button>
+                      <?php if ($login_types['ldap'] == 'true') { ?>
+                      <button class="nav-link" id="ldap-tab" data-bs-toggle="tab" data-bs-target="#nav-ldap" type="button" role="tab" aria-controls="nav-ldap" aria-selected="false">LDAP</button>
+                      <?php } ?>
+                  </div>
+                </nav>
+                <div class="tab-content" id="myTabContent">
+                    <div role="tabpanel" class="tab-pane fade show active" id="nav-local" role="tabpanel" aria-labelledby="nav-local">
                         <?php
                         include_once FORMS_DIR . DS . $form . '.php';
                         ?>
                     </div>
 
-                    <?php /* if ($login_types['ldap'] == 'true') { ?>
-                        <div role="tabpanel" class="tab-pane fade" id="ldap">
-                            <?php include_once FORMS_DIR . DS . 'login-ldap.php'; ?>
-                        </div>
-                    <?php } */ ?>
+                    <?php  if ($login_types['ldap'] == 'true') { ?>
+                    <div role="tabpanel" class="tab-pane fade show" id="nav-ldap" role="tabpanel" aria-labelledby="nav-ldap">
+                        <?php include_once FORMS_DIR . DS . 'login-ldap.php'; ?>
+                    </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
