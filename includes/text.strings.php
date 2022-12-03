@@ -99,7 +99,7 @@ $json_strings = [
         'complete_all_options' => __('Please complete all the fields.','cftp_admin'),
         'enum_invalid' => __('Type is not valid','cftp_admin'),
         'numeric' => __('Value %s is not a number','cftp_admin'),
-        
+
         // Validation strings for the length of usernames and passwords
         'length_user' => sprintf(__('Length should be between %d and %d characters long', 'cftp_admin'), MIN_USER_CHARS, MAX_USER_CHARS),
         'length_pass' => sprintf(__('Length should be between %d and %d characters long', 'cftp_admin'), MIN_PASS_CHARS, MAX_PASS_CHARS),
@@ -109,7 +109,7 @@ $json_strings = [
         'req_lower' => __('1 lowercase character','cftp_admin'),
         'req_number' => __('1 number','cftp_admin'),
         'req_special' => __('1 special character','cftp_admin'),
-        
+
         // Installation strings
         'install_no_sitename' => __('Sitename was not completed.','cftp_admin'),
         'install_no_baseuri' => __('ProjectSend URI was not completed.','cftp_admin'),

@@ -147,7 +147,7 @@
     }
 
     // LDAP
-    /*
+
 ?>
 <div class="options_divide"></div>
 
@@ -160,6 +160,7 @@
 
 <div class="options_column">
     <div class="form-group row">
+
         <label for="ldap_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
         <div class="col-sm-8">
             <select class="form-select" name="ldap_signin_enabled" id="ldap_signin_enabled">
@@ -192,7 +193,7 @@
                 'type' => 'password',
             ),
             'search_base' => array(
-                'label' => __('Search base','cftp_admin'),
+                'label' => __('Search base DN','cftp_admin'),
                 'name' => 'ldap_search_base',
                 'type' => 'text',
                 'note' => sprintf(__('The tree where to search users on. Eg: %s', 'cftp_admin'), 'cn=Users,dc=domain,dc=com'),
@@ -224,8 +225,7 @@
         </div>
     </div>
 </div>
-*/ ?>
-<?php /*
+
 <h5><i class="fa fa-openid"></i> OpenID</h5>
 <?php
     $oidc_enabled = get_option('oidc_signin_enabled');
@@ -259,4 +259,3 @@
         }
     ?>
 </div>
-*/

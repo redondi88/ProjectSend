@@ -452,7 +452,6 @@ function generate_random_password()
 function generate_username($from)
 {
     $cut = substr($from, 0, MAX_USER_CHARS);
-    if (!username_exists($cut)) {
         return $cut;
     }
 
@@ -488,7 +487,7 @@ function get_client_by_username($client)
 
 /**
  * Get a user using any of the accepted field names
- * 
+ *
  * @uses get_user_by_id
  * @return array
  */
@@ -808,7 +807,7 @@ function render_footer_text()
 
 /**
  * function render_json_variables
- * 
+ *
  * Adds a CDATA block with variables that are used on the main JS file
  * URLs. text strings, etc.
  */
@@ -2001,7 +2000,7 @@ function count_memberships_requests_denied()
 
     $sql_requests = $dbh->prepare("SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'");
     $sql_requests->execute();
-   
+
     return $sql_requests->rowCount();
 }
 
@@ -2042,14 +2041,14 @@ function get_client_ip()
         'CF-Connecting-IP',
         'REMOTE_ADDR',
     );
-    
-    // A bit more concise 
+
+    // A bit more concise
     foreach($ipHeaders as $header) {
         if (empty($_SERVER[$header])) continue;
         $ip = $_SERVER[$header];
         break;
     }
-    
+
     // Simplified single IP filtering
     return explode(',', $ip)[0];
 }

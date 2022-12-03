@@ -4,7 +4,7 @@
  * sharing web application.
  * Clients are created and assigned a username and a password. Then you can
  * upload as much files as you want under each account, and optionally add
- * a name and description to them. 
+ * a name and description to them.
  *
  * ProjectSend is hosted on Google Code.
  * Feel free to participate!

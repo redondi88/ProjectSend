@@ -9,7 +9,26 @@
         function tagifyOnChange(e){
             console.log(e.target.value)
         }
+        $( "#test-ldap" ).click(function() {
+          //alert( "Testing LDAP3" );
+          $.ajax({
+              type:	'GET',
+              cache:	false,
+              url:	'includes/ajax.process.php',
+              data:	'do=ldap_test',
+              success: function(result) {
+                  console.log(result);
+                  var html_response ='';
+                  if(result.status=="success"){
 
+                    $( "#ajax_response" ).addClass( "alert alert-success" );
+                  } else {
+                    $( "#ajax_response" ).addClass( "alert alert-warning" );
+                  }
+                  $( "#ajax_response" ).text( result.message )
+              }
+          });
+        });
         $(document).ready(function(){
             var validator = $("#options").validate({
                 errorPlacement: function(error, element) {

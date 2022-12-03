@@ -31,7 +31,7 @@ switch ($_GET['do']) {
         $auth->setLanguage($_POST['language']);
         echo $login;
         break;
-        */
+
         exit;
     case 'logout':
         force_logout();

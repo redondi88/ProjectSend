@@ -46,7 +46,7 @@ switch ($_GET['do']) {
 
     case 'folder_move':
         $folder = new \ProjectSend\Classes\Folder($_POST['folder_id']);
-        $move = $folder->setNewParent(CURRENT_USER_ID, $_POST['new_parent_id']); 
+        $move = $folder->setNewParent(CURRENT_USER_ID, $_POST['new_parent_id']);
 
         if ($move) {
             echo json_encode([
@@ -64,7 +64,7 @@ switch ($_GET['do']) {
 
     case 'file_move':
         $file = new \ProjectSend\Classes\Files($_POST['file_id']);
-        $move = $file->moveToFolder($_POST['new_parent_id']); 
+        $move = $file->moveToFolder($_POST['new_parent_id']);
 
         if ($move) {
             echo json_encode([
@@ -82,7 +82,7 @@ switch ($_GET['do']) {
 
     case 'folder_rename':
         $folder = new \ProjectSend\Classes\Folder($_POST['folder_id']);
-        $rename = $folder->rename($_POST['name']); 
+        $rename = $folder->rename($_POST['name']);
 
         if ($rename) {
             echo json_encode([
@@ -100,7 +100,7 @@ switch ($_GET['do']) {
 
     case 'folder_delete':
         $folder = new \ProjectSend\Classes\Folder($_POST['folder_id']);
-        $delete = $folder->delete(); 
+        $delete = $folder->delete();
 
         if (!$delete) {
             echo json_encode([
@@ -123,6 +123,7 @@ switch ($_GET['do']) {
         exit;
     break;
 
+    break;
     default:
         die_with_error_code(500);
     break;
