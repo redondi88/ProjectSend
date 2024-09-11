@@ -1,4 +1,6 @@
 <?php
+use \Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 function getAuthorizationHeader(){
     $headers = null;
@@ -27,4 +29,37 @@ function getBearerToken() {
         }
     }
     return null;
+}
+function generateJwtToken($user_id, $email, $secret_key, $expiration_time_in_seconds = 3600) {
+
+    // Current timestamp
+    $issued_at = time();
+    $expiration_time = $issued_at + $expiration_time_in_seconds;  // Token expiration time
+
+    // JWT Payload
+    $payload = [
+        // 'iss' => 'getBaseUri',         // Issuer
+        'iat' => $issued_at,               // Issued at time
+        'exp' => $expiration_time,         // Expiration time
+        'data' => [
+            'user_id' => $user_id,
+            'email' => $email
+        ]
+    ];
+
+    // Encode the payload to generate the JWT token
+    $jwt = JWT::encode($payload, $secret_key, 'HS256');  // 'HS256' is the hashing algorithm used
+
+    return $jwt;
+}
+
+function verify_jwt($jwt, $secret_key) {
+    try {
+        // Decode the JWT token
+        $decoded = JWT::decode($jwt, new Key($secret_key, 'HS256'));
+        return (array) $decoded;
+    } catch (Exception $e) {
+        // Handle errors (e.g., expired token, invalid signature)
+        return null;
+    }
 }

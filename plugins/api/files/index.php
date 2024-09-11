@@ -2,7 +2,9 @@
 // Include required dependencies
 require_once '../../../bootstrap.php';
 require_once '../apiBootstrap.php';
-echo getBearerToken();
+$token= getBearerToken();
+
+print_r(verify_jwt($token, getCsrfToken()));
 
 // Set response headers
 header('Content-Type: application/json');

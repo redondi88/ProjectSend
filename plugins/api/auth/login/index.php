@@ -1,6 +1,7 @@
 <?php
 // Set the content type to JSON for the response
 require_once '../../../../bootstrap.php';
+require_once '../../apiBootstrap.php';
 header('Content-Type: application/json');
 
 // Ensure we're dealing with a POST request
@@ -41,12 +42,12 @@ if (isset($input['email']) && isset($input['password'])) {
 
     if ($login->status == 'success') {
         $user = new \ProjectSend\Classes\Users($login->user_id);
-        $jwt_token = "your_generated_jwt_token_here";
+        $jwt_token= generateJwtToken($user->id, $user->email, getCsrfToken(), $expiration_time_in_seconds = 3600);
         echo json_encode([
             'status' => 'success',
             'message' => 'Login successful',
             'token' => $jwt_token,
-            'expires_in' => 3600 // Token expiration time in seconds
+            'expires_in' => $expiration_time_in_seconds // Token expiration time in seconds
         ]);
 
     } else {
