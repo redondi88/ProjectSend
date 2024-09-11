@@ -79,7 +79,7 @@ if (!defined("DEBUG")) {
  * IS_DEV is set to true during development to show a sitewide remainder
  * of the app unreleased status.
  */
-define('IS_DEV', false);
+define('IS_DEV', true);
 
 /**
  * This constant holds the current default charset
@@ -156,6 +156,7 @@ define('TABLE_CUSTOM_ASSETS', TABLES_PREFIX . 'custom_assets');
 define('TABLE_CUSTOM_DOWNLOADS', TABLES_PREFIX . 'custom_downloads');
 define('TABLE_USER_LIMIT_UPLOAD_TO', TABLES_PREFIX . 'user_limit_upload_to');
 define('TABLE_AUTHENTICATION_CODES', TABLES_PREFIX . 'authentication_codes');
+define('TABLE_PLUGINS', TABLES_PREFIX . 'plugins');
 
 $original_basic_tables = array(
     TABLE_FILES,

@@ -46,7 +46,8 @@ class Files
 
     private $use_date_folder;
     private $is_filetype_allowed;
-
+    private $dbh;
+    private $logger;
     public function __construct($file_id = null)
     {
         global $dbh;

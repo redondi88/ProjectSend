@@ -18,6 +18,9 @@ class ActionsLog
     private $affected_account_name;
 
     private $dbh;
+    private $activities_references;
+    private $details;
+    private $sql_query;
 
     public function __construct()
     {

@@ -104,3 +104,6 @@ $assets_loader = new \ProjectSend\Classes\AssetsLoader();
 global $permissions;
 $user_id = (user_is_logged_in()) ? CURRENT_USER_ID : null;
 $permissions = new \ProjectSend\Classes\Permissions($user_id);
+
+// Plugins
+require_once ROOT_DIR . '/includes/security/plugins.php';

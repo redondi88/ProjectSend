@@ -282,6 +282,15 @@ if (current_role_in(array(9, 8, 7))) {
             ),
         ),
     );
+    $items['plugins'] = array(
+        'nav' => 'plugins',
+        'level' => array(9),
+        'main' => array(
+            'label' => __('Plugins', 'cftp_admin'),
+            'icon' => 'plug',
+            'link' => 'plugins.php',
+        ),
+    );
 }
 
 // Items for clients
