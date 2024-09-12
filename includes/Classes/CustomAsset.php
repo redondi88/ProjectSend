@@ -6,9 +6,8 @@
 
 namespace ProjectSend\Classes;
 
-use \PDO;
 use \ProjectSend\Classes\Validation;
-use \ProjectSend\Classes\ActionsLog;
+use \PDO;
 
 class CustomAsset
 {
@@ -25,22 +24,20 @@ class CustomAsset
     public $enabled;
     public $created_date;
 
-    private $validation_passed = false;  // Ensure this is initialized
-    private $validation_errors = [];     // Ensure this is initialized
+    private $validation_passed;
+    private $validation_errors;
+    private $statement;
+    private $row;
 
     // Permissions
     private $allowed_actions_roles;
 
     public function __construct($asset_id = null)
     {
-        global $dbh;  // Using the global database handler
-
-        if (empty($dbh)) {
-            throw new \Exception("Database handler is not initialized.");
-        }
+        global $dbh;
 
         $this->dbh = $dbh;
-        $this->logger = new ActionsLog;
+        $this->logger = new \ProjectSend\Classes\ActionsLog;
 
         $this->allowed_actions_roles = [9];
 
@@ -54,16 +51,20 @@ class CustomAsset
      */
     public function setId($id)
     {
-        $this->id = (int) $id;  // Typecasting for safety
+        $this->id = $id;
     }
   
     /**
      * Return the ID
-     * @return int|false
+     * @return int
      */
     public function getId()
     {
-        return !empty($this->id) ? $this->id : false;
+        if (!empty($this->id)) {
+            return $this->id;
+        }
+
+        return false;
     }
 
     /**
@@ -71,12 +72,12 @@ class CustomAsset
      */
     public function set($arguments = [])
     {
-        $this->title = isset($arguments['title']) ? encode_html($arguments['title']) : null;
-        $this->content = isset($arguments['content']) ? $arguments['content'] : null;
-        $this->language = isset($arguments['language']) ? $arguments['language'] : null;
-        $this->location = isset($arguments['location']) ? $arguments['location'] : null;
-        $this->position = isset($arguments['position']) ? $arguments['position'] : null;
-        $this->enabled = isset($arguments['enabled']) ? (int) $arguments['enabled'] : 0;
+		$this->title = (!empty($arguments['title'])) ? encode_html($arguments['title']) : null;
+        $this->content = (!empty($arguments['content'])) ? $arguments['content'] : null;
+        $this->language = (!empty($arguments['language'])) ? $arguments['language'] : null;
+        $this->location = (!empty($arguments['location'])) ? $arguments['location'] : null;
+        $this->position = (!empty($arguments['position'])) ? $arguments['position'] : null;
+        $this->enabled = (!empty($arguments['enabled'])) ? (int)$arguments['enabled'] : 0;
     }
 
     /**
@@ -85,26 +86,25 @@ class CustomAsset
      */
     public function get($id)
     {
-        $this->id = (int) $id;
+        $this->id = $id;
 
-        $stmt = $this->dbh->prepare("SELECT * FROM " . TABLE_CUSTOM_ASSETS . " WHERE id=:id");
-        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
-        $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CUSTOM_ASSETS . " WHERE id=:id");
+        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $this->statement->execute();
+        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
 
-        if ($stmt->rowCount() == 0) {
+        if ($this->statement->rowCount() == 0) {
             return false;
         }
-
-        $row = $stmt->fetch();  // Fetch the row once, no need to use while loop for a single row
-        if ($row) {
-            $this->title = html_output($row['title']);
-            $this->content = htmlentities_allowed_code_editor($row['content']);
-            $this->language = html_output($row['language']);
-            $this->location = html_output($row['location']);
-            $this->position = html_output($row['position']);
-            $this->enabled = (int) $row['enabled'];
-            $this->created_date = html_output($row['timestamp']);
+    
+        while ($this->row = $this->statement->fetch() ) {
+            $this->title = html_output($this->row['title']);
+            $this->content = htmlentities_allowed_code_editor($this->row['content']);
+            $this->language = html_output($this->row['language']);
+            $this->location = html_output($this->row['location']);
+            $this->position = html_output($this->row['position']);
+            $this->enabled = html_output($this->row['enabled']);
+            $this->created_date = html_output($this->row['timestamp']);
             $this->language_formatted = format_asset_language_name($this->language);
             return true;
         }
@@ -117,17 +117,19 @@ class CustomAsset
      */
     public function getProperties()
     {
-        return [
+        $return = [
             'id' => $this->id,
             'title' => $this->title,
             'content' => htmlentities_allowed_code_editor($this->content),
             'language' => $this->language,
-            'language_formatted' => format_asset_language_name($this->language),
+            'language_formatted' =>  format_asset_language_name($this->language),
             'location' => $this->location,
             'position' => $this->position,
             'enabled' => $this->enabled,
             'created_date' => $this->created_date,
         ];
+
+        return $return;
     }
 
     /**
@@ -136,38 +138,38 @@ class CustomAsset
      */
     public function isEnabled()
     {
-        return $this->enabled === 1;
+        if ($this->enabled == 1) {
+            return true;
+        }
+
+        return false;
     }
 
-    /**
-     * Validate the information from the form.
-     */
-    public function validate()
-    {
-        global $json_strings;
+	/**
+	 * Validate the information from the form.
+	 */
+	public function validate()
+	{
+		global $json_strings;
 
-        $validation = new Validation;
+        $validation = new \ProjectSend\Classes\Validation;
         $validation->validate_items([
-            'title' => [
-                'value' => $this->title,
+            $this->title => [
                 'required' => ['error' => $json_strings['validation']['no_title']],
             ],
-            'language' => [
-                'value' => $this->language,
+            $this->language => [
                 'in_enum' => [
                     'error' => __('Language is not valid', 'cftp_admin'),
                     'valid_values' => array_keys(get_asset_languages()),
                 ],
             ],
-            'location' => [
-                'value' => $this->location,
+            $this->location => [
                 'in_enum' => [
                     'error' => __('Location is not valid', 'cftp_admin'),
                     'valid_values' => array_keys(get_asset_locations()),
                 ],
             ],
-            'position' => [
-                'value' => $this->position,
+            $this->position => [
                 'in_enum' => [
                     'error' => __('Position is not valid', 'cftp_admin'),
                     'valid_values' => array_keys(get_asset_positions()),
@@ -178,13 +180,14 @@ class CustomAsset
         if ($validation->passed()) {
             $this->validation_passed = true;
             return true;
-        } else {
+		}
+		else {
             $this->validation_passed = false;
             $this->validation_errors = $validation->list_errors();
         }
-
+        
         return false;
-    }
+	}
 
     public function validationPassed()
     {
@@ -192,131 +195,154 @@ class CustomAsset
     }
 
     /**
-     * Return the validation errors to the front end
+     * Return the validation errors the the front end
      */
     public function getValidationErrors()
     {
-        return !empty($this->validation_errors) ? $this->validation_errors : false;
+        if (!empty($this->validation_errors)) {
+            return $this->validation_errors;
+        }
+
+        return false;
     }
 
-    /**
-     * Create a new asset.
-     */
-    public function create()
-    {
+	/**
+	 * Create a new asset.
+	 */
+	public function create()
+	{
+        $state = array(
+            'query' => 0,
+        );
+
         if (!$this->validate()) {
-            return ['query' => 0];
+            $state = [];
+            return $state;
         }
 
-        $sql = $this->dbh->prepare("INSERT INTO " . TABLE_CUSTOM_ASSETS . " (title, content, language, location, position, enabled)"
-                                    ." VALUES (:title, :content, :language, :location, :position, :enabled)");
-        $sql->bindParam(':title', $this->title);
-        $sql->bindParam(':content', $this->content);
-        $sql->bindParam(':language', $this->language);
-        $sql->bindParam(':location', $this->location);
-        $sql->bindParam(':position', $this->position);
-        $sql->bindParam(':enabled', $this->enabled, PDO::PARAM_INT);
+        $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_CUSTOM_ASSETS . " (title, content, language, location, position, enabled)"
+                                                ." VALUES (:title, :content, :language, :location, :position, :enabled)");
+        $this->sql_query->bindParam(':title', $this->title);
+        $this->sql_query->bindParam(':content', $this->content);
+        $this->sql_query->bindParam(':language', $this->language);
+        $this->sql_query->bindParam(':location', $this->location);
+        $this->sql_query->bindParam(':position', $this->position);
+        $this->sql_query->bindParam(':enabled', $this->enabled, PDO::PARAM_INT);
+        $this->sql_query->execute();
 
-        if ($sql->execute()) {
-            $this->id = $this->dbh->lastInsertId();
-            $this->logAction(50);  // Record action 50 for creation
+        $this->id = $this->dbh->lastInsertId();
+        $state['id'] = $this->id;
 
-            return ['query' => 1, 'id' => $this->id];
+        if ($this->sql_query) {
+            $state['query'] = 1;
+
+            $record = $this->logAction(50);
         }
 
-        return ['query' => 0];
-    }
+		return $state;
+	}
 
-    /**
-     * Edit an existing asset.
-     */
-    public function edit()
-    {
+	/**
+	 * Edit an existing group.
+	 */
+	public function edit()
+	{
         if (empty($this->id)) {
             return false;
         }
 
+        $state = [];
+
         if (!$this->validate()) {
-            return ['query' => 0];
+            $state = [];
+            return $state;
         }
 
-        $sql = $this->dbh->prepare("UPDATE " . TABLE_CUSTOM_ASSETS . " SET title = :title, content = :content, location = :location, position = :position, enabled = :enabled WHERE id = :id");
-        $sql->bindParam(':title', $this->title);
-        $sql->bindParam(':content', $this->content);
-        $sql->bindParam(':location', $this->location);
-        $sql->bindParam(':position', $this->position);
-        $sql->bindParam(':enabled', $this->enabled, PDO::PARAM_INT);
-        $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+        /** SQL query */
+		$this->sql_query = $this->dbh->prepare( "UPDATE " . TABLE_CUSTOM_ASSETS . " SET title = :title, content = :content, location = :location, position = :position, enabled = :enabled WHERE id = :id" );
+		$this->sql_query->bindParam(':title', $this->title);
+        $this->sql_query->bindParam(':content', $this->content);
+        $this->sql_query->bindParam(':location', $this->location);
+        $this->sql_query->bindParam(':position', $this->position);
+        $this->sql_query->bindParam(':enabled', $this->enabled, PDO::PARAM_INT);
+		$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
+		$this->sql_query->execute();
 
-        if ($sql->execute()) {
-            $this->logAction(51);  // Record action 51 for editing
-            return ['query' => 1];
+		if ($this->sql_query) {
+			$state['query'] = 1;
+
+            $record = $this->logAction(51);
         }
+        
+		return $state;
+	}
 
-        return ['query' => 0];
-    }
-
-    /**
-     * Enable the asset
-     */
     public function enable()
     {
         return $this->setEnabledStatus(1);
     }
 
-    /**
-     * Disable the asset
-     */
     public function disable()
     {
         return $this->setEnabledStatus(0);
     }
 
     private function setEnabledStatus($change_to)
-    {
-        if (!$this->get($this->id)) {
+	{
+        $asset = $this->get($this->id);
+        if (!$asset) {
             return false;
         }
 
-        $log_action_number = ($change_to === 1) ? 53 : 54;  // Log enable/disable action
-
-        if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $sql = $this->dbh->prepare('UPDATE ' . TABLE_CUSTOM_ASSETS . ' SET enabled=:enabled_state WHERE id=:id');
-            $sql->bindParam(':enabled_state', $change_to, PDO::PARAM_INT);
-            $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-            $sql->execute();
-
-            $this->logAction($log_action_number);
-            return true;
+        switch ($change_to) {
+            case 0:
+                $log_action_number = 54;
+                break;
+            case 1:
+                $log_action_number = 53;
+                break;
+            default:
+                return false;
+                break;
         }
 
-        return false;
-    }
+        /** Do a permissions check */
+        if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
+            $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_CUSTOM_ASSETS . ' SET enabled=:enabled_state WHERE id=:id');
+            $this->sql->bindParam(':enabled_state', $change_to, PDO::PARAM_INT);
+            $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+            $this->sql->execute();
 
-    /**
-     * Delete an existing asset.
-     */
-    public function delete()
-    {
+            $record = $this->logAction($log_action_number);
+            
+            return true;
+        }
+        
+        return false;
+	}
+
+	/**
+	 * Delete an existing group.
+	 */
+	public function delete()
+	{
         if (empty($this->id)) {
             return false;
         }
 
+        /** Do a permissions check */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CUSTOM_ASSETS . ' WHERE id=:id');
-            $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-            $sql->execute();
-
-            $this->logAction(52);  // Record action 52 for deletion
-            return true;
+            $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CUSTOM_ASSETS . ' WHERE id=:id');
+            $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+            $this->sql->execute();
         }
+        
+        $record = $this->logAction(52);
 
-        return false;
+        return true;
     }
 
-    /**
-     * Record the action log.
-     */
+    /** Record the action log */
     private function logAction($number)
     {
         $this->logger->addEntry([

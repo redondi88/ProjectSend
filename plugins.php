@@ -14,6 +14,14 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 // Query the clients
 $params = [];
 
+// Header buttons
+$header_action_buttons = [
+    [
+        'url' => 'plugin_install.php',
+        'label' => __('Install Plugin', 'cftp_admin'),
+    ],
+];
+
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 $cq = "SELECT * FROM " . TABLE_PLUGINS;
@@ -22,7 +30,6 @@ $sql = $dbh->prepare($cq);
 
 $sql->execute($params);
 $count = $sql->rowCount();
-// $count = $sql->rowCount();
 
 // Flash errors
 if (!$count) {
@@ -40,6 +47,7 @@ if (!$count) {
     }
 }
 include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
+
 ?>
 <form action="<?php echo $current_url; ?>" name="clients_list" method="post" class="form-inline batch_actions">
     <?php addCsrf(); ?>
@@ -78,7 +86,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     )
                 );
                 $table->thead($thead_columns);
-                $var_is_greater_than_two = ($var > 2 ? true : false);
+                
                 $sql->setFetchMode(PDO::FETCH_ASSOC);
                 while ($row = $sql->fetch()) {
                     $table->addRow();
@@ -118,17 +126,6 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
     </div>
 </form>
    
-<?php
-    if (!empty($table)) {
-        // PAGINATION
-        $pagination = new \ProjectSend\Classes\Layout\Pagination;
-        echo $pagination->make([
-            'link' => 'clients.php',
-            'current' => $pagination_page,
-            'item_count' => $count_for_pagination,
-        ]);
-    }
-?>
     
 <?php
 include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
