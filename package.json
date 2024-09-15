@@ -4,8 +4,7 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/projectsend/projectsend.git"
-    }
-}
+    },
     "author": "Ignacio Nelson <info@subwaydesign.com.ar> (https://github.com/projectsend)",
     "license": "GPL-3.0-or-later",
     "dependencies": {
