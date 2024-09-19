@@ -1,4 +1,3 @@
-
 <?php
 // error_reporting(E_ALL);
 // Get the request URI
