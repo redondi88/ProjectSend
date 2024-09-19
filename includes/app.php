@@ -79,7 +79,7 @@ if (!defined("DEBUG")) {
  * IS_DEV is set to true during development to show a sitewide remainder
  * of the app unreleased status.
  */
-define('IS_DEV', true);
+define('IS_DEV', false);
 
 /**
  * This constant holds the current default charset
