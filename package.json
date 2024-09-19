@@ -1,11 +1,11 @@
 {
     "name": "projectsend",
-    "description": "ProjectSend: Open source, client-oriented, private file sharing web app.",
+    "description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/projectsend/projectsend.git"
     },
-    "author": "Ignacio Nelson <info@subwaydesign.com.ar> (https://github.com/projectsend)",
+    "author": "Ignacio Nelson <info@subwaydesign.com.ar>",
     "license": "GPL-3.0-or-later",
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^42.0.2",
