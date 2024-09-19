@@ -121,6 +121,7 @@ class Plugins
             if ((!empty($results))) {
                 $this->name = $results["name"];
                 $this->id = $id;
+                $this->version=$results["version"];
                 return $results;
             }
         } catch (\Exception $e) {

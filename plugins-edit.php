@@ -68,6 +68,12 @@ if ($_POST) {
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-12">
+                            <label for="version"><?php _e('Version:', 'cftp_admin'); ?></label>
+                            <input type="text" id="version" class="form-control" value="<?php echo $plugin_properties['version']; ?> " disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
                             <label for="description"><?php _e('Description:', 'cftp_admin'); ?></label>
                             <input type="text" id="description" class="form-control" value="<?php echo $plugin_properties['description']; ?> " disabled>
                         </div>
