@@ -404,6 +404,18 @@ function format_action_log_record($params)
             $formatted = sprintf(__('%s disabled the asset "%s" (%s)','cftp_admin'), $owner_user, $details->title, $details->language);
             $type = 'system';
         break;
+        case 55:
+            $part1 = $owner_user;
+            $action_text = __('Modified a plugin','cftp_admin');
+            $formatted = sprintf(__('%s modified the plugin "%s"','cftp_admin'), $owner_user, $details->name);
+            $type = 'system';
+        break;
+        case 56:
+            $part1 = $owner_user;
+            $action_text = __('Installed a plugin','cftp_admin');
+            $formatted = sprintf(__('%s installed the plugin "%s" version "%s"','cftp_admin'), $owner_user, $details->name, $details->version);
+            $type = 'system';
+        break;
     }
 
 

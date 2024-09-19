@@ -83,6 +83,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     array(
                         'content' => __('enabled', 'cftp_admin'),
 
+                    ),
+                    array(
+                        'content' => __('Edit', 'cftp_admin'),
+
                     )
                 );
                 $table->thead($thead_columns);
@@ -109,7 +113,11 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         ),
                         array(
                             'content' =>  $enabled,
-                        )
+                        ),
+                        array(
+                            'actions' => true,
+                            'content' =>  '<a href="plugins-edit.php?id=' . $row["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n"
+                        ),
                     );
 
                     foreach ($tbody_cells as $cell) {

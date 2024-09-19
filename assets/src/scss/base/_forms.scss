@@ -84,3 +84,47 @@ textarea.textarea_high {
         }
     }
 }
+
+// JSON textarea
+
+.json-textarea {
+    width: 100%;
+    height: 300px;
+    background-color: #2b2b2b; /* Dark background */
+    color: #f8f8f2; /* Text color */
+    font-family: 'Courier New', Courier, monospace; /* Monospaced font */
+    padding: 15px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+    overflow: auto;
+    white-space: pre;
+    line-height: 1.5;
+  }
+
+  .json-textarea::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .json-textarea::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 8px;
+  }
+
+  .json-textarea::-webkit-scrollbar-track {
+    background-color: #333;
+  }
+
+  .json-textarea[data-highlight="true"] {
+    background-color: #1e1e1e;
+    color: #c5c8c6;
+  }
+
+  .json-textarea::selection {
+    background-color: #b3d4fc; /* Custom highlight color */
+  }
+
+  .json-textarea pre {
+    white-space: pre-wrap; /* Ensure text wraps properly */
+  }

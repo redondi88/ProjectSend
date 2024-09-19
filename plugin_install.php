@@ -15,7 +15,7 @@ log_in_required($allowed_levels);
 function getCurrentPlugins()
 {
     global $dbh;
-    $cq = "SELECT name, version, path FROM " . TABLE_PLUGINS;
+    $cq = "SELECT name, version, path, id FROM " . TABLE_PLUGINS;
     $sql = $dbh->prepare($cq);
     $sql->execute([]);
     $sql->setFetchMode(PDO::FETCH_ASSOC);
@@ -25,6 +25,7 @@ function getCurrentPlugins()
         $response[$data['name']] = [
             'version' => $data['version'],
             'path' => $data['path'],
+            'id' => $data['id']
         ];
     }
 
@@ -32,35 +33,37 @@ function getCurrentPlugins()
 }
 
 /**
- * Simulate the installation of the plugin or update it if needed.
+ * Install or update the plugin if needed.
  * 
  * @param array $params The plugin parameters like name, version, and path.
  */
 function doInstall($params = [])
 {
-    global $dbh;
+    $plugin = new \ProjectSend\Classes\Plugins();
+    
+    $arguments = [
+        'name' => $params['name'],
+        'path' => $params['path'],
+        'version' => $params['version'],
+        'description' => $params['description'],
+        'settings' => json_encode($params['settings']),
+        'enabled' => 0, // Default to disabled; can be changed later
+    ];
 
-    // For demonstration, print the plugin being installed
-    echo "Installing/Updating plugin: " . $params['name'] . " (Version: " . $params['version'] . ", Path: " . $params['path'] . ")\n";
+    // Check if the plugin already exists
+    $existingPlugin = getCurrentPlugins();
+    $currentPlugin = $existingPlugin[$params['name']];
+    if (isset($currentPlugin)) {
+        // Plugin exists, update it
+        $plugin->getPlugin($currentPlugin['id']);
+        $plugin->set($arguments);
+        $plugin->edit();
 
-    // Insert or update plugin details into the database
-    $cq = "INSERT INTO " . TABLE_PLUGINS . " (name, path, description, version, enabled) 
-           VALUES (:name, :path, :description, :version, 0)  /* Assuming enabled is a BOOLEAN or TINYINT column */
-           ON DUPLICATE KEY UPDATE version = :version_update, path = :path_update, description = :description_update";
-
-    $sql = $dbh->prepare($cq);
-
-    // Execute the query and ensure the parameter placeholders are correctly matched
-    $sql->execute([
-        ':name' => $params['name'],
-        ':path' => $params['path'],
-        ':description' => $params['description'],
-        ':version' => $params['version'],
-        // Bind the parameters again for the update clause with different names
-        ':version_update' => $params['version'],
-        ':path_update' => $params['path'],
-        ':description_update' => $params['description']
-    ]);
+    } else {
+        // Plugin does not exist, create a new one
+        $plugin->set($arguments);
+        $plugin->create();
+    }
 }
 
 /**
@@ -71,6 +74,7 @@ function doInstall($params = [])
  */
 function execute_php_in_folders($base_dir, $file_to_execute = 'install.php')
 {
+    global $msg;
     // Ensure the base directory exists
     if (!is_dir($base_dir)) {
         throw new Exception("The base directory does not exist.");
@@ -110,24 +114,24 @@ function execute_php_in_folders($base_dir, $file_to_execute = 'install.php')
 
                     if (version_compare($pluginDetails['version'], $installed_version, '>')) {
                         // If the new version is higher, update the plugin
-                        echo "Updating plugin {$pluginDetails['name']} from version {$installed_version} to {$pluginDetails['version']}...\n";
+                        $msg .= "Updating plugin {$pluginDetails['name']} from version {$installed_version} to {$pluginDetails['version']}...<br>";
                         doInstall($pluginDetails);
                     } elseif ($pluginDetails['path'] !== $installed_path) {
                         // If the path has changed, update the path
-                        echo "Updating path of plugin {$pluginDetails['name']} from {$installed_path} to {$pluginDetails['path']}...\n";
+                        $msg .= "Updating path of plugin {$pluginDetails['name']} from {$installed_path} to {$pluginDetails['path']}...<br>";
                         doInstall($pluginDetails);
                     } else {
                         // If the plugin is already installed and up-to-date
-                        echo "Plugin {$pluginDetails['name']} is already installed and up-to-date. Skipping...\n";
+                        $msg .= "Plugin {$pluginDetails['name']} is already installed and up-to-date. Skipping...<br>";
                     }
                 } else {
                     // Install the plugin if it is not installed
-                    echo "Installing plugin {$pluginDetails['name']}...\n";
+                    $msg .= "Installing plugin {$pluginDetails['name']}...<br>";
                     doInstall($pluginDetails);
                 }
             } catch (Exception $e) {
                 // Handle exceptions that may arise during execution
-                echo "Error executing {$file}: " . $e->getMessage() . "\n";
+                $msg .= "Error executing {$file}: " . $e->getMessage() . "<br>";
             }
         }
     }
@@ -136,7 +140,12 @@ function execute_php_in_folders($base_dir, $file_to_execute = 'install.php')
 try {
     $base_dir = './plugins/';
     execute_php_in_folders($base_dir);
-    // header("Location: plugins.php"); 
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+    if (!$msg) {
+        $msg = 'No changes made';
+    }
+    $flash->success(__($msg));
+    ps_redirect(BASE_URI . 'plugins.php?');
+} catch (Exception $e) {;
+    $flash->error(__($msg . $e->getMessage()));
+    ps_redirect(BASE_URI . 'plugins.php?');
 }

@@ -21,7 +21,7 @@ function isPluginEnabled($path)
     $statement->execute();
     $results = $statement->fetchAll(PDO::FETCH_ASSOC);
     foreach ($results as $row) {
-        if (strpos($path, $row["path"]) !== false) {
+        if (strpos($path, $row["path"]) !== true) {
             return true;
         }
     }

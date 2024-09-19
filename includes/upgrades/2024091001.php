@@ -12,6 +12,7 @@ function upgrade_2024091001()
             `description` varchar(250) COLLATE utf8_general_ci  NULL,
             `version` varchar(50) COLLATE utf8_general_ci NOT NULL DEFAULT 1,
             `enabled` BOOLEAN NOT NULL DEFAULT FALSE,
+            `settings` JSON NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
         ";
