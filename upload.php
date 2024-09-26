@@ -35,6 +35,7 @@ if (defined('UPLOAD_MAX_FILESIZE')) {
 }
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+$chunk_size = get_option('upload_chunk_size');
 ?>
 <div class="row">
     <div class="col-12">
@@ -43,7 +44,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 $("#uploader").pluploadQueue({
                     runtimes: 'html5',
                     url: 'includes/upload.process.php',
-                    chunk_size: '1mb',
+                    chunk_size: '<?php echo (!empty($chunk_size)) ? $chunk_size : '1'; ?>mb',
                     rename: true,
                     dragdrop: true,
                     multipart: true,
@@ -60,8 +61,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         }
                         ?>
                     },
-                    flash_swf_url: 'vendor/moxiecode/plupload/js/Moxie.swf',
-                    silverlight_xap_url: 'vendor/moxiecode/plupload/js/Moxie.xap',
+                    //flash_swf_url: 'vendor/moxiecode/plupload/js/Moxie.swf',
+                    //silverlight_xap_url: 'vendor/moxiecode/plupload/js/Moxie.xap',
                     preinit: {
                         Init: function(up, info) {
                             //$('#uploader_container').removeAttr("title");

@@ -90,6 +90,26 @@
     </div>
 </div>
 
+<div class="form-group row">
+    <label for="upload_chunk_size" class="col-sm-4 control-label"><?php _e('Chunk size','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <select class="form-select" name="upload_chunk_size" id="upload_chunk_size" required>
+            <?php
+                $chunk_size_options = array(
+                    1, 5, 10, 20, 50, 100
+                );
+                foreach ( $chunk_size_options as $value ) {
+            ?>
+                    <option value="<?php echo $value; ?>" <?php if (get_option('upload_chunk_size') == $value) { echo 'selected="selected"'; } ?>><?php echo $value; ?> mb.</option>
+            <?php
+                }
+            ?>
+        </select>
+        <p class="field_note form-text"><?php _e("Uploaded files are split into chunks which are then compiled on your server. Be sure to check by uploading one small and large files after changing this setting to make sure your internet connection and server can handle them.",'cftp_admin'); ?></p>
+    </div>
+</div>
+
+
 <h3><?php _e('Uploads defaults','cftp_admin'); ?></h3>
 
 <div class="form-group row">

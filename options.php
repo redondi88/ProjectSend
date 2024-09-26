@@ -18,6 +18,7 @@ switch ($section) {
             'footer_custom_enable',
             'files_default_expire',
             'files_default_public',
+            'upload_chunk_size',
             'uploads_organize_folders_by_date',
             'files_descriptions_use_ckeditor',
             'use_browser_lang',
